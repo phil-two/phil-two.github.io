@@ -1,1 +1,57 @@
+Project 1 - Arch Linux
+Pre-Installation
+Type cat /sys/firmware/efi/fw_platform_size
+You should get 64, I originally struggled and got a null return, I figured it out by changing settings while creating the VM
+Type fdisk -l (Should return /dev/sda)
+Use fdisk and the disk found using the above and type fdisk /dev/sda
+Go through fdisk and create 2 partitions
+Format the partitions. One should be fat32 and the other should be ext4
+Type mkfs.fat -F 32 /dev/sda1 and mkfs.ext4 /dev/sda2
+Now mount the system with mount
+Type mount /dev/sda2 /mnt and mkdir /mnt/boot /mnt/var /mnt/home and mount /dev/sda1 /mnt/boot
+
+
+
+
+
+Installation and Configuration
+Install packages by typing pacstrap -K /mnt base linux linux-firmware
+Now type genfstab -U /mnt >> /mnt/etc/fstab
+Check this file by typing nano /mnt/etc/fstab
+Type arch-chroot /mnt to change root into the new system to configure and localize it
+I did the Time and Localization in reverse order as I found it easier.
+Type ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime but replace America/Chicago with your region and city
+Type hwclock –systohc –utc (I added the –utc to ensure it was set correctly)
+ nano /etc/locale.gen and find en_US.UTF-8 UTF-8 or your corresponding locale
+Type echo LANG=en_US.UTF-8 > /etc/locale.conf
+Type export LANG=en_US.UTF-8
+Set the hostname to archlinux by typing echo archlinux > /etc/hostname
+Type systemctl enable dhcpcd to complete network configuration
+Type mkinitcpio -P
+Now set the root password and create users
+Type passwd root and set the root password
+Now type useradd -m -g users -G wheel -s /bin/bash phil
+Repeat the above step but replace phil with justin and codi
+Type passwd phil and set the password
+Repeat the above and set the password to GraceHopper1906
+Type nano /etc/sudoers and add phil ALL=(ALL:ALL) ALL and repeat for the above names to give them sudo
+Type exit to leave the system configuration
+Type umount /mnt/boot and umount/mnt
+Type reboot
+When you reenter, type sudo pacman -Syy
+Type sudo pacman -S openssh to install ssh
+Type sudo pacman -S zsh to install a new shell
+Type sudo pacman -S --needed lxqt xdg-utils ttf-freefont sddm xorg firefox vlc filezilla leafpad xscreensaver archlinux-wallpaper to install LXQT and all the needed components
+Restart because you get an error that you are out of space
+After several rounds of this attempt to clear space on your laptop as you believe that is the issue
+It is not the issue
+Enjoy the Arch Linux experience
+
+
+
+
+
+
+Documentation Completed by: 
+Philip Tu
 
